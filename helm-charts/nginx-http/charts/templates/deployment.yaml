@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
-  metadata:
-  labels:
-    app: {{ .Release.Name }}
+metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
@@ -16,8 +16,8 @@ spec:
         app: {{ .Release.Name }}
     spec:
       containers:
-      - image: {{ .Values.image.repository }}/nginx:{{ .Values.image.tag }}
-        name: {{ .Release.Name }}
-        ports:
-        - containerPort: 80
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ .Release.Name }}
+          image: {{ .Values.image.repository }}/nginx:{{ .Values.image.tag }}
+          ports:
+           - containerPort: 80
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
