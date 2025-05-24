@@ -1,4 +1,4 @@
 image:
-  repository: docker.i
+  repository: docker.io/library
   tag: 1.25.5-alpine-slim
   pullPolicy: IfNotPresent
