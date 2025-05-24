@@ -33,15 +33,27 @@ class Weather:
 
       response = self._get(coordinates_url)
       coordinates = response.json()
-
-      latitude = coordinates['ltu']
-      longitude = coordinates['lgn']
+      
+      #print(coordinates)
+      latitude = coordinates['lat']
+      longitude = coordinates['lon']
 
       return latitude, longitude
 
   def get_daily_weather(self, latitude: str, longitude: str):
-    weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={self.api_key}"
-    self.get(weather_url)
+    weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={self.api_key}&units={self.args.units}"
+    weather_response = self._get(weather_url)
+    
+    return weather_response.json()
+
+  def return_weather(self, weather_dict):
+    temp = str(weather_dict['main']['temp'])
+    temp_min = str(weather_dict['main']['temp_min'])
+    temp_max = str(weather_dict['main']['temp_max'])
+    wind_speed = str(weather_dict['wind']['speed'])
+    weather_desc = str(weather_dict['weather'][0]['description'])
+    return "Temp: " + temp + "\nTemp Min: " +  temp_min + "\nTemp Max: " + temp_max + "\nWind Speed: " + wind_speed + "\nWeather Description: " + weather_desc
+
 
 if __name__ == "__main__":
 
@@ -52,8 +64,12 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(description= 'Generates current weather data')
   parser.add_argument('--zip', type=str, help="enter zipcode for weather data", required=True)
   parser.add_argument('--country', '-c', type=str, default='US', help="enter country abbreviation")
+  parser.add_argument('--units', type=str, default='imperial', help="enter units")
   args = parser.parse_args()
 
   weather = Weather(args)
   latitude, longitude = weather._get_coord()
-  weather.get_daily_weather(latitude, longitude)
+  weather_dict = weather.get_daily_weather(latitude, longitude)
+  weather_results = weather.return_weather(weather_dict)
+  
+  print(weather_results)
